@@ -1,0 +1,45 @@
+{
+  "name": "@fiuzagr/boot",
+  "version": "1.0.0",
+  "description": "Boot webpack projects.",
+  "author": "fiuzagr",
+  "license": "UNLICENSE",
+  "main": "index.js",
+  "engines": {
+    "node": ">=8.10.0 <9",
+    "npm": ">=5.6.0 <6"
+  },
+  "bin": {
+    "boot": "./bin/boot"
+  },
+  "scripts": {
+    "build": "./bin/boot build node"
+  },
+  "dependencies": {
+    "@fiuzagr/logger": "github:fiuzagr/logger#master",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babel-watch": "^2.0.7",
+    "debug": "^3.1.0",
+    "dotenv": "^5.0.1",
+    "eslint": "^4.19.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint_d": "^5.2.2",
+    "lodash": "^4.17.10",
+    "offline-plugin": "^5.0.2",
+    "prettier": "^1.11.1",
+    "prettier-standard": "^8.0.0",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
