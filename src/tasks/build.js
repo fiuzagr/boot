@@ -11,7 +11,7 @@ import logger from 'logger';
 const getBuildSettings = context => {
   logger.info('Getting build settings...');
 
-  const args = map(context.args._, arg => arg.replace('/', '.'));
+  const args = map(context.args._, arg => arg.replace(/\//g, '.'));
   const buildSettings = map(args, arg => {
     const sett = get(context.settings, arg);
     return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;

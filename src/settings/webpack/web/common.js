@@ -2,8 +2,8 @@ const OfflinePlugin = require('offline-plugin');
 const camelCase = require('lodash/camelCase');
 
 module.exports = context => {
-  const { settings, env, packageJson } = context;
-  const publicPath = env.PUBLIC_PATH;
+  const { settings, env, packagesJson } = context;
+  const publicPath = env.PUBLIC_PATH || process.env.PUBLIC_PATH || '/';
   let common = settings.webpack.common;
 
   if (typeof common === 'function') {
@@ -36,7 +36,7 @@ module.exports = context => {
         ServiceWorker: {
           // cacheName is very dangerous: CAN NOT CHANGE
           cacheName: `${camelCase(
-            packageJson.process.name
+            packagesJson.process.name
           )}:${publicPath.replace(/\//g, '')}`,
           events: true,
           output: 'sw.js',

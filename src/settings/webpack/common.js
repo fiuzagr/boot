@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const map = require('lodash/map');
 const keys = require('lodash/keys');
 
 module.exports = ({ paths, args, env, packagesJson }) => {
@@ -45,8 +46,9 @@ module.exports = ({ paths, args, env, packagesJson }) => {
       modules: [bootModulesPath, processModulesPath]
     },
 
-    externals: Object.keys(packagesJson.process.peerDependencies || {}).concat(
-      []
+    externals: map(
+      keys(packagesJson.process.peerDependencies || {}),
+      dependency => new RegExp(`${dependency}(/.+)?`)
     ),
 
     module: {

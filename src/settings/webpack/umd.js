@@ -1,7 +1,7 @@
 const camelCase = require('lodash/camelCase');
 
 module.exports = context => {
-  const { settings, packageJson } = context;
+  const { settings, packagesJson } = context;
   let common = settings.webpack.common;
 
   if (typeof common === 'function') {
@@ -14,9 +14,9 @@ module.exports = context => {
     output: {
       ...common.output,
       library: {
-        root: camelCase(packageJson.process.name),
-        amd: camelCase(packageJson.process.name),
-        commonjs: packageJson.process.name
+        root: camelCase(packagesJson.process.name),
+        amd: camelCase(packagesJson.process.name),
+        commonjs: packagesJson.process.name
       },
       libraryTarget: 'umd',
       globalObject: 'this'

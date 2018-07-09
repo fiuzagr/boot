@@ -87,17 +87,6 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./package.json":
-/*!**********************!*\
-  !*** ./package.json ***!
-  \**********************/
-/*! exports provided: name, version, description, author, license, main, engines, bin, scripts, dependencies, default */
-/***/ (function(module) {
-
-eval("module.exports = {\"name\":\"@fiuzagr/boot\",\"version\":\"1.0.0\",\"description\":\"Boot webpack projects.\",\"author\":\"fiuzagr\",\"license\":\"UNLICENSE\",\"main\":\"index.js\",\"engines\":{\"node\":\">=8.10.0 <9\",\"npm\":\">=5.6.0 <6\"},\"bin\":{\"boot\":\"./bin/boot\"},\"scripts\":{\"build\":\"./bin/boot_src build webpack/node\"},\"dependencies\":{\"@babel/cli\":\"^7.0.0-beta.52\",\"@babel/core\":\"^7.0.0-beta.52\",\"@babel/preset-env\":\"^7.0.0-beta.52\",\"@babel/register\":\"^7.0.0-beta.52\",\"@fiuzagr/logger\":\"github:fiuzagr/logger#master\",\"babel-eslint\":\"^8.2.5\",\"babel-loader\":\"^8.0.0-beta.4\",\"babel-plugin-module-resolver\":\"^3.1.1\",\"dotenv\":\"^6.0.0\",\"eslint\":\"^5.0.1\",\"eslint-config-prettier\":\"^2.9.0\",\"eslint-import-resolver-babel-module\":\"^4.0.0\",\"eslint-plugin-babel\":\"^5.1.0\",\"eslint-plugin-import\":\"^2.13.0\",\"eslint-plugin-node\":\"^6.0.1\",\"eslint-plugin-prettier\":\"^2.6.2\",\"eslint-plugin-promise\":\"^3.8.0\",\"lodash\":\"^4.17.10\",\"offline-plugin\":\"^5.0.5\",\"prettier\":\"^1.13.7\",\"rimraf\":\"^2.6.2\",\"webpack\":\"^4.15.1\",\"webpack-cli\":\"^3.0.8\",\"webpack-node-externals\":\"^1.7.2\"}};\n\n//# sourceURL=webpack:///./package.json?");
-
-/***/ }),
-
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -154,7 +143,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nconst path = __webpack_require__(/*! path */ \"path\");\n\nconst webpack = __webpack_require__(/*! webpack */ \"webpack\");\n\nconst keys = __webpack_require__(/*! lodash/keys */ \"lodash/keys\");\n\nmodule.exports = ({\n  paths,\n  args,\n  env,\n  packagesJson\n}) => {\n  const bootModulesPath = paths.boot.modules;\n  const watch = args.w || args.watch || env.WATCH || process.env.WATCH;\n  const processPath = paths.process.root;\n  const processSrcPath = paths.process.src;\n  const processModulesPath = paths.process.modules;\n  const distPath = path.join(processPath, 'dist');\n  const debugMode = env.DEBUG;\n  const mode = debugMode ? 'development' : 'production';\n  const publicPath = env.PUBLIC_PATH;\n  return {\n    mode,\n    devtool: debugMode ? 'eval-source-map' : 'source-map',\n    bail: !debugMode,\n    profile: debugMode,\n    cache: !debugMode,\n    stats: debugMode ? 'normal' : 'minimal',\n    entry: {\n      index: [path.join(processSrcPath, 'index.js')]\n    },\n    output: {\n      publicPath,\n      path: distPath,\n      filename: '[name].js'\n    },\n    resolve: {\n      symlinks: true,\n      extensions: ['.js', '.jsx'],\n      modules: [bootModulesPath, processModulesPath, processSrcPath]\n    },\n    resolveLoader: {\n      symlinks: true,\n      modules: [bootModulesPath, processModulesPath]\n    },\n    externals: Object.keys(packagesJson.process.peerDependencies || {}).concat([]),\n    module: {\n      rules: [{\n        test: /\\.jsx?$/,\n        include: [processSrcPath],\n        use: [{\n          loader: 'babel-loader'\n        }]\n      }]\n    },\n    plugins: [new webpack.DefinePlugin({ ...keys(env, k => ({\n        [`process.env.${k}`]: JSON.stringify(env[k])\n      })),\n      'process.env.NODE_ENV': JSON.stringify(undefined)\n    })],\n    watch,\n    watchOptions: {\n      aggregateTimeout: 1000,\n      poll: 1000,\n      ignored: /node_modules|.git/\n    }\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/common.js?");
+eval("\n\nconst path = __webpack_require__(/*! path */ \"path\");\n\nconst webpack = __webpack_require__(/*! webpack */ \"webpack\");\n\nconst map = __webpack_require__(/*! lodash/map */ \"lodash/map\");\n\nconst keys = __webpack_require__(/*! lodash/keys */ \"lodash/keys\");\n\nmodule.exports = ({\n  paths,\n  args,\n  env,\n  packagesJson\n}) => {\n  const bootModulesPath = paths.boot.modules;\n  const watch = args.w || args.watch || env.WATCH || process.env.WATCH;\n  const processPath = paths.process.root;\n  const processSrcPath = paths.process.src;\n  const processModulesPath = paths.process.modules;\n  const distPath = path.join(processPath, 'dist');\n  const debugMode = env.DEBUG;\n  const mode = debugMode ? 'development' : 'production';\n  const publicPath = env.PUBLIC_PATH;\n  return {\n    mode,\n    devtool: debugMode ? 'eval-source-map' : 'source-map',\n    bail: !debugMode,\n    profile: debugMode,\n    cache: !debugMode,\n    stats: debugMode ? 'normal' : 'minimal',\n    entry: {\n      index: [path.join(processSrcPath, 'index.js')]\n    },\n    output: {\n      publicPath,\n      path: distPath,\n      filename: '[name].js'\n    },\n    resolve: {\n      symlinks: true,\n      extensions: ['.js', '.jsx'],\n      modules: [bootModulesPath, processModulesPath, processSrcPath]\n    },\n    resolveLoader: {\n      symlinks: true,\n      modules: [bootModulesPath, processModulesPath]\n    },\n    externals: map(keys(packagesJson.process.peerDependencies || {}), dependency => new RegExp(`${dependency}(/.+)?`)),\n    module: {\n      rules: [{\n        test: /\\.jsx?$/,\n        include: [processSrcPath],\n        use: [{\n          loader: 'babel-loader'\n        }]\n      }]\n    },\n    plugins: [new webpack.DefinePlugin({ ...keys(env, k => ({\n        [`process.env.${k}`]: JSON.stringify(env[k])\n      })),\n      'process.env.NODE_ENV': JSON.stringify(undefined)\n    })],\n    watch,\n    watchOptions: {\n      aggregateTimeout: 1000,\n      poll: 1000,\n      ignored: /node_modules|.git/\n    }\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/common.js?");
 
 /***/ }),
 
@@ -190,7 +179,7 @@ eval("\n\nconst nodeExternals = __webpack_require__(/*! webpack-node-externals *
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nconst camelCase = __webpack_require__(/*! lodash/camelCase */ \"lodash/camelCase\");\n\nmodule.exports = context => {\n  const {\n    settings,\n    packageJson\n  } = context;\n  let common = settings.webpack.common;\n\n  if (typeof common === 'function') {\n    common = common(context);\n  }\n\n  return { ...common,\n    output: { ...common.output,\n      library: {\n        root: camelCase(packageJson.process.name),\n        amd: camelCase(packageJson.process.name),\n        commonjs: packageJson.process.name\n      },\n      libraryTarget: 'umd',\n      globalObject: 'this'\n    }\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/umd.js?");
+eval("\n\nconst camelCase = __webpack_require__(/*! lodash/camelCase */ \"lodash/camelCase\");\n\nmodule.exports = context => {\n  const {\n    settings,\n    packagesJson\n  } = context;\n  let common = settings.webpack.common;\n\n  if (typeof common === 'function') {\n    common = common(context);\n  }\n\n  return { ...common,\n    output: { ...common.output,\n      library: {\n        root: camelCase(packagesJson.process.name),\n        amd: camelCase(packagesJson.process.name),\n        commonjs: packagesJson.process.name\n      },\n      libraryTarget: 'umd',\n      globalObject: 'this'\n    }\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/umd.js?");
 
 /***/ }),
 
@@ -202,7 +191,7 @@ eval("\n\nconst camelCase = __webpack_require__(/*! lodash/camelCase */ \"lodash
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nconst OfflinePlugin = __webpack_require__(/*! offline-plugin */ \"offline-plugin\");\n\nconst camelCase = __webpack_require__(/*! lodash/camelCase */ \"lodash/camelCase\");\n\nmodule.exports = context => {\n  const {\n    settings,\n    env,\n    packageJson\n  } = context;\n  const publicPath = env.PUBLIC_PATH;\n  let common = settings.webpack.common;\n\n  if (typeof common === 'function') {\n    common = common(context);\n  }\n\n  return { ...common,\n    target: 'web',\n    plugins: [...common.plugins, new OfflinePlugin({\n      safeToUseOptionalCaches: true,\n      autoUpdate: false,\n      // true means 1 hour\n      caches: {\n        main: [':rest:'],\n        additional: [':externals:'],\n        optional: ['**/font/**/*.*']\n      },\n      excludes: ['**/.*', '**/*.map'],\n      externals: [],\n      rewrites: asset => asset.indexOf('web-app.manifest') >= 0 ? '/web-app.manifest.json' : asset.indexOf('index.html') >= 0 ? publicPath : asset,\n      ServiceWorker: {\n        // cacheName is very dangerous: CAN NOT CHANGE\n        cacheName: `${camelCase(packageJson.process.name)}:${publicPath.replace(/\\//g, '')}`,\n        events: true,\n        output: 'sw.js',\n        navigateFallbackURL: publicPath\n      },\n      AppCache: {\n        events: true,\n        caches: ['main', 'additional', 'optional'],\n        FALLBACK: {\n          [publicPath]: publicPath\n        }\n      }\n    })]\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/web/common.js?");
+eval("\n\nconst OfflinePlugin = __webpack_require__(/*! offline-plugin */ \"offline-plugin\");\n\nconst camelCase = __webpack_require__(/*! lodash/camelCase */ \"lodash/camelCase\");\n\nmodule.exports = context => {\n  const {\n    settings,\n    env,\n    packagesJson\n  } = context;\n  const publicPath = env.PUBLIC_PATH;\n  let common = settings.webpack.common;\n\n  if (typeof common === 'function') {\n    common = common(context);\n  }\n\n  return { ...common,\n    target: 'web',\n    plugins: [...common.plugins, new OfflinePlugin({\n      safeToUseOptionalCaches: true,\n      autoUpdate: false,\n      // true means 1 hour\n      caches: {\n        main: [':rest:'],\n        additional: [':externals:'],\n        optional: ['**/font/**/*.*']\n      },\n      excludes: ['**/.*', '**/*.map'],\n      externals: [],\n      rewrites: asset => asset.indexOf('web-app.manifest') >= 0 ? '/web-app.manifest.json' : asset.indexOf('index.html') >= 0 ? publicPath : asset,\n      ServiceWorker: {\n        // cacheName is very dangerous: CAN NOT CHANGE\n        cacheName: `${camelCase(packagesJson.process.name)}:${publicPath.replace(/\\//g, '')}`,\n        events: true,\n        output: 'sw.js',\n        navigateFallbackURL: publicPath\n      },\n      AppCache: {\n        events: true,\n        caches: ['main', 'additional', 'optional'],\n        FALLBACK: {\n          [publicPath]: publicPath\n        }\n      }\n    })]\n  };\n};\n\n//# sourceURL=webpack:///./src/settings/webpack/web/common.js?");
 
 /***/ }),
 
@@ -242,17 +231,6 @@ eval("\n\nconst path = __webpack_require__(/*! path */ \"path\");\n\nmodule.expo
 
 /***/ }),
 
-/***/ "./src/tasks sync recursive ^.*$":
-/*!*****************************!*\
-  !*** ./src/tasks sync ^.*$ ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var map = {\n\t\".\": \"./src/tasks/index.js\",\n\t\"./\": \"./src/tasks/index.js\",\n\t\"./build\": \"./src/tasks/build.js\",\n\t\"./build.js\": \"./src/tasks/build.js\",\n\t\"./index\": \"./src/tasks/index.js\",\n\t\"./index.js\": \"./src/tasks/index.js\",\n\t\"./serve\": \"./src/tasks/serve.js\",\n\t\"./serve.js\": \"./src/tasks/serve.js\"\n};\n\n\nfunction webpackContext(req) {\n\tvar id = webpackContextResolve(req);\n\treturn __webpack_require__(id);\n}\nfunction webpackContextResolve(req) {\n\tvar id = map[req];\n\tif(!(id + 1)) { // check for number or string\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t}\n\treturn id;\n}\nwebpackContext.keys = function webpackContextKeys() {\n\treturn Object.keys(map);\n};\nwebpackContext.resolve = webpackContextResolve;\nmodule.exports = webpackContext;\nwebpackContext.id = \"./src/tasks sync recursive ^.*$\";\n\n//# sourceURL=webpack:///./src/tasks_sync_^.*$?");
-
-/***/ }),
-
 /***/ "./src/tasks/build.js":
 /*!****************************!*\
   !*** ./src/tasks/build.js ***!
@@ -261,7 +239,7 @@ eval("var map = {\n\t\".\": \"./src/tasks/index.js\",\n\t\"./\": \"./src/tasks/i
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _webpack = _interopRequireDefault(__webpack_require__(/*! webpack */ \"webpack\"));\n\nvar _rimraf = _interopRequireDefault(__webpack_require__(/*! rimraf */ \"rimraf\"));\n\nvar _map = _interopRequireDefault(__webpack_require__(/*! lodash/map */ \"lodash/map\"));\n\nvar _get = _interopRequireDefault(__webpack_require__(/*! lodash/get */ \"lodash/get\"));\n\nvar _cloneDeep = _interopRequireDefault(__webpack_require__(/*! lodash/cloneDeep */ \"lodash/cloneDeep\"));\n\nvar _logger = _interopRequireDefault(__webpack_require__(/*! ../logger */ \"./src/logger.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// Vendor\n// local\nconst getBuildSettings = context => {\n  _logger.default.info('Getting build settings...');\n\n  const args = (0, _map.default)(context.args._, arg => arg.replace('/', '.'));\n  const buildSettings = (0, _map.default)(args, arg => {\n    const sett = (0, _get.default)(context.settings, arg);\n    return typeof sett === 'function' ? sett((0, _cloneDeep.default)(context)) : sett;\n  });\n\n  _logger.default.debug(buildSettings);\n\n  return Promise.resolve({ ...context,\n    buildSettings\n  });\n};\n\nvar _default = (context = {}) => getBuildSettings(context).then(({\n  buildSettings,\n  env,\n  args\n}) => new Promise((resolve, reject) => {\n  _logger.default.info('Building...');\n\n  _logger.default.debug('Removing path:', buildSettings[0].output.path);\n\n  (0, _rimraf.default)(buildSettings[0].output.path, {}, err => {\n    if (err) {\n      reject(err);\n      return;\n    }\n\n    _logger.default.debug('Building config:', buildSettings[0]);\n\n    (0, _webpack.default)(buildSettings[0], (err, stats) => {\n      if (err) {\n        reject(err);\n        return;\n      }\n\n      if (stats.hasErrors() && (args.watch || args.w)) {\n        reject(stats.toString({\n          chunks: false,\n          colors: env.DEBUG\n        }));\n        return;\n      }\n\n      _logger.default.info(stats.toString({\n        chunks: false,\n        colors: env.DEBUG\n      }));\n\n      resolve(buildSettings[0]);\n    });\n  });\n}));\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/tasks/build.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _webpack = _interopRequireDefault(__webpack_require__(/*! webpack */ \"webpack\"));\n\nvar _rimraf = _interopRequireDefault(__webpack_require__(/*! rimraf */ \"rimraf\"));\n\nvar _map = _interopRequireDefault(__webpack_require__(/*! lodash/map */ \"lodash/map\"));\n\nvar _get = _interopRequireDefault(__webpack_require__(/*! lodash/get */ \"lodash/get\"));\n\nvar _cloneDeep = _interopRequireDefault(__webpack_require__(/*! lodash/cloneDeep */ \"lodash/cloneDeep\"));\n\nvar _logger = _interopRequireDefault(__webpack_require__(/*! ../logger */ \"./src/logger.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// Vendor\n// local\nconst getBuildSettings = context => {\n  _logger.default.info('Getting build settings...');\n\n  const args = (0, _map.default)(context.args._, arg => arg.replace(/\\//g, '.'));\n  const buildSettings = (0, _map.default)(args, arg => {\n    const sett = (0, _get.default)(context.settings, arg);\n    return typeof sett === 'function' ? sett((0, _cloneDeep.default)(context)) : sett;\n  });\n\n  _logger.default.debug(buildSettings);\n\n  return Promise.resolve({ ...context,\n    buildSettings\n  });\n};\n\nvar _default = (context = {}) => getBuildSettings(context).then(({\n  buildSettings,\n  env,\n  args\n}) => new Promise((resolve, reject) => {\n  _logger.default.info('Building...');\n\n  _logger.default.debug('Removing path:', buildSettings[0].output.path);\n\n  (0, _rimraf.default)(buildSettings[0].output.path, {}, err => {\n    if (err) {\n      reject(err);\n      return;\n    }\n\n    _logger.default.debug('Building config:', buildSettings[0]);\n\n    (0, _webpack.default)(buildSettings[0], (err, stats) => {\n      if (err) {\n        reject(err);\n        return;\n      }\n\n      if (stats.hasErrors() && (args.watch || args.w)) {\n        reject(stats.toString({\n          chunks: false,\n          colors: env.DEBUG\n        }));\n        return;\n      }\n\n      _logger.default.info(stats.toString({\n        chunks: false,\n        colors: env.DEBUG\n      }));\n\n      resolve(buildSettings[0]);\n    });\n  });\n}));\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/tasks/build.js?");
 
 /***/ }),
 
@@ -285,7 +263,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\n// Vendor\n// import webpack from 'webpack';\n// import rimraf from 'rimraf';\nvar _default = ({\n  webpackFile\n}) => new Promise((resolve, reject) => {\n  let webpackConfig = __webpack_require__(\"./src/tasks sync recursive ^.*$\")(`${webpackFile}`);\n\n  console.log(webpackConfig);\n  resolve();\n});\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/tasks/serve.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _webpack = _interopRequireDefault(__webpack_require__(/*! webpack */ \"webpack\"));\n\nvar _webpackDevServer = _interopRequireDefault(__webpack_require__(/*! webpack-dev-server */ \"webpack-dev-server\"));\n\nvar _map = _interopRequireDefault(__webpack_require__(/*! lodash/map */ \"lodash/map\"));\n\nvar _get = _interopRequireDefault(__webpack_require__(/*! lodash/get */ \"lodash/get\"));\n\nvar _cloneDeep = _interopRequireDefault(__webpack_require__(/*! lodash/cloneDeep */ \"lodash/cloneDeep\"));\n\nvar _logger = _interopRequireDefault(__webpack_require__(/*! ../logger */ \"./src/logger.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// Vendor\n// local\nconst getServeSettings = context => {\n  _logger.default.info('Getting serve settings...');\n\n  const args = (0, _map.default)(context.args._, arg => arg.replace(/\\//g, '.'));\n  const serveSettings = (0, _map.default)(args, arg => {\n    const sett = (0, _get.default)(context.settings, arg);\n    return typeof sett === 'function' ? sett((0, _cloneDeep.default)(context)) : sett;\n  });\n\n  _logger.default.debug(serveSettings);\n\n  return Promise.resolve({ ...context,\n    serveSettings\n  });\n};\n\nvar _default = (context = {}) => getServeSettings(context).then(({\n  serveSettings,\n  paths\n}) => new Promise(resolve => {\n  _logger.default.info('Serving...');\n\n  const host = serveSettings[0].devServer.host;\n  const port = serveSettings[0].devServer.port; // webpack dev server\n\n  serveSettings[0].entry['devServerClient'] = [paths.boot.modules + '/webpack-dev-server/client?' + `http://${host}:${port}/`]; // create server\n\n  const server = new _webpackDevServer.default((0, _webpack.default)(serveSettings[0]), serveSettings[0].devServer);\n  server.listen(host, port, () => _logger.default.info(`Listening on ${host}:${port}`));\n  resolve();\n}));\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/tasks/serve.js?");
 
 /***/ }),
 
@@ -308,7 +286,7 @@ eval("var map = {\n\t\".\": \"./src/utils/index.js\",\n\t\"./\": \"./src/utils/i
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _path = _interopRequireDefault(__webpack_require__(/*! path */ \"path\"));\n\nvar _logger = _interopRequireDefault(__webpack_require__(/*! ../logger */ \"./src/logger.js\"));\n\nvar _package = _interopRequireDefault(__webpack_require__(/*! ../../package.json */ \"./package.json\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar _default = (context = {}) => {\n  _logger.default.info('Getting packages json...');\n\n  const process = context.paths.process;\n\n  const processPackageJsonFile = _path.default.join(process.root, 'package.json');\n\n  const processPackageJson = __webpack_require__(\"./src/utils sync recursive ^.*$\")(`${processPackageJsonFile}`);\n\n  const packagesJson = {\n    boot: _package.default,\n    process: processPackageJson\n  };\n\n  _logger.default.debug(packagesJson);\n\n  return Promise.resolve({ ...context,\n    packagesJson\n  });\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/utils/get-packages-json.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = void 0;\n\nvar _fs = _interopRequireDefault(__webpack_require__(/*! fs */ \"fs\"));\n\nvar _path = _interopRequireDefault(__webpack_require__(/*! path */ \"path\"));\n\nvar _logger = _interopRequireDefault(__webpack_require__(/*! ../logger */ \"./src/logger.js\"));\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nconst readJson = file => {\n  return new Promise((resolve, reject) => {\n    _fs.default.readFile(file, 'utf8', (err, data) => {\n      if (err) {\n        reject(err);\n        return;\n      }\n\n      resolve(JSON.parse(data));\n    });\n  });\n};\n\nvar _default = (context = {}) => {\n  _logger.default.info('Getting packages json...');\n\n  const bootRoot = context.paths.boot.root;\n\n  const bootPackageJsonFile = _path.default.join(bootRoot, 'package.json');\n\n  const processRoot = context.paths.process.root;\n\n  const processPackageJsonFile = _path.default.join(processRoot, 'package.json');\n\n  return readJson(bootPackageJsonFile).then(bootPackageJson => readJson(processPackageJsonFile).then(processPackageJson => {\n    const packagesJson = {\n      boot: bootPackageJson,\n      process: processPackageJson\n    };\n\n    _logger.default.debug(packagesJson);\n\n    return { ...context,\n      packagesJson: {\n        boot: bootPackageJson,\n        process: processPackageJson\n      }\n    };\n  }));\n};\n\nexports.default = _default;\n\n//# sourceURL=webpack:///./src/utils/get-packages-json.js?");
 
 /***/ }),
 
@@ -403,6 +381,17 @@ eval("module.exports = __webpack_require__(/*! /data/fiuzagr/boot/src/index.js *
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"@fiuzagr/logger\");\n\n//# sourceURL=webpack:///external_%22@fiuzagr/logger%22?");
+
+/***/ }),
+
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"fs\");\n\n//# sourceURL=webpack:///external_%22fs%22?");
 
 /***/ }),
 
@@ -568,6 +557,17 @@ eval("module.exports = require(\"rimraf\");\n\n//# sourceURL=webpack:///external
 /***/ (function(module, exports) {
 
 eval("module.exports = require(\"webpack\");\n\n//# sourceURL=webpack:///external_%22webpack%22?");
+
+/***/ }),
+
+/***/ "webpack-dev-server":
+/*!*************************************!*\
+  !*** external "webpack-dev-server" ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = require(\"webpack-dev-server\");\n\n//# sourceURL=webpack:///external_%22webpack-dev-server%22?");
 
 /***/ }),
 
