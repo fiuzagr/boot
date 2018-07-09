@@ -1,6 +1,6 @@
-const nodeExternals = require('webpack-node-externals');
+import nodeExternals from 'webpack-node-externals';
 
-module.exports = context => {
+export default context => {
   let common = context.settings.webpack.common;
 
   if (typeof common === 'function') {

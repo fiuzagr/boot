@@ -1,29 +1,28 @@
-// Vendor
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import map from 'lodash/map';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 
-// local
-import logger from 'logger';
+import logger from '@local/logger';
 
-const getServeSettings = context => {
-  logger.info('Getting serve settings...');
+const getServeSettings = context =>
+  new Promise(resolve => {
+    logger.info('Getting serve settings...');
 
-  const args = map(context.args._, arg => arg.replace(/\//g, '.'));
-  const serveSettings = map(args, arg => {
-    const sett = get(context.settings, arg);
-    return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
+    const args = map(context.args._, arg => arg.replace(/\//g, '.'));
+    const serveSettings = map(args, arg => {
+      const sett = get(context.settings, arg);
+      return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
+    });
+
+    logger.debug(serveSettings);
+
+    resolve({
+      ...context,
+      serveSettings
+    });
   });
-
-  logger.debug(serveSettings);
-
-  return Promise.resolve({
-    ...context,
-    serveSettings
-  });
-};
 
 export default (context = {}) =>
   getServeSettings(context).then(

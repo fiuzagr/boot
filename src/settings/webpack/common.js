@@ -1,9 +1,9 @@
-const path = require('path');
-const webpack = require('webpack');
-const map = require('lodash/map');
-const keys = require('lodash/keys');
+import path from 'path';
+import webpack from 'webpack';
+import map from 'lodash/map';
+import keys from 'lodash/keys';
 
-module.exports = ({ paths, args, env, packagesJson }) => {
+export default ({ paths, args, env, packagesJson }) => {
   const bootModulesPath = paths.boot.modules;
 
   const watch = args.w || args.watch || env.WATCH || process.env.WATCH;
@@ -15,7 +15,7 @@ module.exports = ({ paths, args, env, packagesJson }) => {
 
   const debugMode = env.DEBUG;
   const mode = debugMode ? 'development' : 'production';
-  const publicPath = env.PUBLIC_PATH;
+  const publicPath = env.PUBLIC_PATH || '/';
 
   return {
     mode,
@@ -38,12 +38,15 @@ module.exports = ({ paths, args, env, packagesJson }) => {
     resolve: {
       symlinks: true,
       extensions: ['.js', '.jsx'],
-      modules: [bootModulesPath, processModulesPath, processSrcPath]
+      modules: [processSrcPath, processModulesPath, bootModulesPath],
+      alias: {
+        '@local': processSrcPath
+      }
     },
 
     resolveLoader: {
       symlinks: true,
-      modules: [bootModulesPath, processModulesPath]
+      modules: [processModulesPath, bootModulesPath]
     },
 
     externals: map(

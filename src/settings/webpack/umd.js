@@ -1,6 +1,6 @@
-const camelCase = require('lodash/camelCase');
+import camelCase from 'lodash/camelCase';
 
-module.exports = context => {
+export default context => {
   const { settings, packagesJson } = context;
   let common = settings.webpack.common;
 

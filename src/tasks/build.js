@@ -1,29 +1,28 @@
-// Vendor
 import webpack from 'webpack';
 import rimraf from 'rimraf';
 import map from 'lodash/map';
 import get from 'lodash/get';
 import cloneDeep from 'lodash/cloneDeep';
 
-// local
-import logger from 'logger';
+import logger from '@local/logger';
 
-const getBuildSettings = context => {
-  logger.info('Getting build settings...');
+const getBuildSettings = context =>
+  new Promise(resolve => {
+    logger.info('Getting build settings...');
 
-  const args = map(context.args._, arg => arg.replace(/\//g, '.'));
-  const buildSettings = map(args, arg => {
-    const sett = get(context.settings, arg);
-    return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
+    const args = map(context.args._, arg => arg.replace(/\//g, '.'));
+    const buildSettings = map(args, arg => {
+      const sett = get(context.settings, arg);
+      return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
+    });
+
+    logger.debug(buildSettings);
+
+    resolve({
+      ...context,
+      buildSettings
+    });
   });
-
-  logger.debug(buildSettings);
-
-  return Promise.resolve({
-    ...context,
-    buildSettings
-  });
-};
 
 export default (context = {}) =>
   getBuildSettings(context).then(

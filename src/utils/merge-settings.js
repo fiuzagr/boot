@@ -1,31 +1,32 @@
 import path from 'path';
 import merge from 'lodash/merge';
 
-import logger from 'logger';
-import bootSettings from 'settings';
+import logger from '@local/logger';
+import bootSettings from '@local/settings';
 
-export default (context = {}) => {
-  logger.info('Merging settings...');
+export default (context = {}) =>
+  new Promise(resolve => {
+    logger.info('Merging settings...');
 
-  const processBootSettingsPath = path.resolve(
-    context.paths.process.root,
-    '.boot',
-    'settings'
-  );
-  let processBootSettings = {};
+    const processBootSettingsPath = path.resolve(
+      context.paths.process.root,
+      '.boot',
+      'settings'
+    );
+    let processBootSettings = {};
 
-  try {
-    processBootSettings = require(`${processBootSettingsPath}`);
-  } catch (e) {
-    processBootSettings = {};
-  }
+    try {
+      processBootSettings = require(`${processBootSettingsPath}`);
+    } catch (e) {
+      processBootSettings = {};
+    }
 
-  const settings = merge({}, bootSettings, processBootSettings);
+    const settings = merge({}, bootSettings, processBootSettings);
 
-  logger.debug(settings);
+    logger.debug(settings);
 
-  return Promise.resolve({
-    ...context,
-    settings
+    resolve({
+      ...context,
+      settings
+    });
   });
-};

@@ -1,4 +1,4 @@
-import runner from './runner';
+import runner from '@local/runner';
 
 export default { runner };
 

@@ -41,6 +41,7 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-promise": "^3.8.0",
+    "html-webpack-plugin": "^3.2.0",
     "lodash": "^4.17.10",
     "offline-plugin": "^5.0.5",
     "prettier": "^1.13.7",

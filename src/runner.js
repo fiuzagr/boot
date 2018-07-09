@@ -1,10 +1,10 @@
-import logger from 'logger';
-import parseArguments from 'utils/parse-arguments';
-import parseEnvironment from 'utils/parse-environment';
-import resolvePaths from 'utils/resolve-paths';
-import getPackagesJson from 'utils/get-packages-json';
-import mergeSettings from 'utils/merge-settings';
-import mergeTasks from 'utils/merge-tasks';
+import logger from '@local/logger';
+import parseArguments from '@local/utils/parse-arguments';
+import parseEnvironment from '@local/utils/parse-environment';
+import resolvePaths from '@local/utils/resolve-paths';
+import getPackagesJson from '@local/utils/get-packages-json';
+import mergeSettings from '@local/utils/merge-settings';
+import mergeTasks from '@local/utils/merge-tasks';
 
 const getTaskRunner = context => {
   logger.info('Getting task runner...');

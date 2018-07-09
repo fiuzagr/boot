@@ -1,37 +1,37 @@
-// Vendor
 import clone from 'lodash/clone';
 import reduce from 'lodash/reduce';
 import remove from 'lodash/remove';
 import slice from 'lodash/slice';
 
-// local
-import logger from 'logger';
+import logger from '@local/logger';
 
-export default (context = {}) => {
-  logger.info('Parsing arguments...');
+export default (context = {}) =>
+  new Promise(resolve => {
+    logger.info('Parsing arguments...');
 
-  const argv = slice(clone(process.argv), 2);
-  const dashedArgs = reduce(
-    remove(argv, value => value.indexOf('-') === 0),
-    (args, value) => {
-      const parseArg = /--?([^=]+)=?(.*)/;
-      const parsed = value.match(parseArg);
-      args[parsed[1]] = parsed[2] || true;
-      return args;
-    },
-    {}
-  );
+    const argv = slice(clone(process.argv), 2);
 
-  const args = {
-    task: argv.shift(),
-    _: argv,
-    ...dashedArgs
-  };
+    const dashedArgs = reduce(
+      remove(argv, value => value.indexOf('-') === 0),
+      (args, value) => {
+        const parseArg = /--?([^=]+)=?(.*)/;
+        const parsed = value.match(parseArg);
+        args[parsed[1]] = parsed[2] || true;
+        return args;
+      },
+      {}
+    );
 
-  logger.debug(args);
+    const args = {
+      task: argv.shift(),
+      _: argv,
+      ...dashedArgs
+    };
 
-  return Promise.resolve({
-    ...context,
-    args
+    logger.debug(args);
+
+    resolve({
+      ...context,
+      args
+    });
   });
-};

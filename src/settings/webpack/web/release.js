@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = context => {
+export default context => {
   const { settings, paths, env } = context;
   let common = settings.webpack.web.common;
 
@@ -24,9 +24,9 @@ module.exports = context => {
 
     devServer: {
       contentBase: distPath,
-      publicPath: env.PUBLIC_PATH || process.env.PUBLIC_PATH || '/',
-      port: env.PORT || process.env.PORT || '8000',
-      host: env.HOST || process.env.HOST || '0.0.0.0'
+      publicPath: env.PUBLIC_PATH || '/',
+      port: env.PORT || '8000',
+      host: env.HOST || '0.0.0.0'
     }
   };
 };

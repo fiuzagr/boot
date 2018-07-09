@@ -1,19 +1,8 @@
-import fs from 'fs';
 import path from 'path';
-import logger from 'logger';
 
-const readJson = file => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(file, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(JSON.parse(data));
-    });
-  });
-};
+// local
+import logger from '@local/logger';
+import readFile from '@local/utils/read-file';
 
 export default (context = {}) => {
   logger.info('Getting packages json...');
@@ -24,11 +13,11 @@ export default (context = {}) => {
   const processRoot = context.paths.process.root;
   const processPackageJsonFile = path.join(processRoot, 'package.json');
 
-  return readJson(bootPackageJsonFile).then(bootPackageJson =>
-    readJson(processPackageJsonFile).then(processPackageJson => {
+  return readFile(bootPackageJsonFile).then(bootPackageJson =>
+    readFile(processPackageJsonFile).then(processPackageJson => {
       const packagesJson = {
-        boot: bootPackageJson,
-        process: processPackageJson
+        boot: JSON.parse(bootPackageJson),
+        process: JSON.parse(processPackageJson)
       };
 
       logger.debug(packagesJson);

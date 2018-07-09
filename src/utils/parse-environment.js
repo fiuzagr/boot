@@ -1,27 +1,35 @@
-// Vendor
+import reduce from 'lodash/reduce';
 import pickBy from 'lodash/pickBy';
 
-// local
-import logger from 'logger';
+import logger from '@local/logger';
 
-export default (settings = {}) => {
-  logger.info('Parsing environment variables...');
+export default (settings = {}) =>
+  new Promise(resolve => {
+    logger.info('Parsing environment variables...');
 
-  const bootEnv = pickBy(process.env, (_, key) => key.indexOf('BOOT_') >= 0);
+    const bootEnv = reduce(
+      pickBy(process.env, (_, key) => key.indexOf('BOOT_') >= 0),
+      (reduced, value, key) => {
+        return {
+          ...reduced,
+          [key.replace('BOOT_', '')]: value
+        };
+      },
+      {
+        NODE_ENV: process.env.NODE_ENV || 'development',
+        DEBUG: !process.env.DEBUG === false
+      }
+    );
 
-  if (!process.env.NODE_ENV) {
-    logger.warn('NODE_ENV is not defined! Assuming "development"...');
-  }
+    if (!process.env.NODE_ENV) {
+      logger.warn(`NODE_ENV is not defined! Assuming "${bootEnv.NODE_ENV}"...`);
+      process.env.NODE_ENV = bootEnv.NODE_ENV;
+    }
 
-  bootEnv.NODE_ENV = process.env.NODE_ENV || 'development';
-  bootEnv.DEBUG =
-    !process.env.DEBUG === false || bootEnv.NODE_ENV !== 'production';
-  bootEnv.PUBLIC_PATH = process.env.PUBLIC_PATH || '/';
+    logger.debug(bootEnv);
 
-  logger.debug(bootEnv);
-
-  return Promise.resolve({
-    ...settings,
-    env: bootEnv
+    resolve({
+      ...settings,
+      env: bootEnv
+    });
   });
-};
