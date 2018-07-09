@@ -1,14 +1,18 @@
-const _path = require('path');
+const path = require('path');
 
-module.exports = settings => {
-  const { webpackFiles, path, env } = settings;
-  const web = require(webpackFiles.web.common)(settings);
+module.exports = context => {
+  const { settings, paths, env } = context;
+  let common = settings.webpack.web.common;
 
-  const processPath = path.process.root;
-  const distPath = _path.join(processPath, 'dist', 'debug');
+  if (typeof common === 'function') {
+    common = common(context);
+  }
+
+  const processPath = paths.process.root;
+  const distPath = path.join(processPath, 'dist', 'debug');
 
   return {
-    ...web,
+    ...common,
     mode: 'development',
     devtool: 'eval-source-map',
     bail: false,

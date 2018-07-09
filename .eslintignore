@@ -1,1 +1,13 @@
-node_modules
+# Third party
+node_modules/
+
+# Not written by hand
+coverage/
+build/
+dist/
+./lib/
+
+# Inverse ignore
+!.babelrc.js
+!.eslintrc.js
+!.prettierrc.js

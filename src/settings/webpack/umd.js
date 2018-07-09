@@ -1,8 +1,12 @@
 const camelCase = require('lodash/camelCase');
 
-module.exports = settings => {
-  const { webpackFiles, packageJson } = settings;
-  const common = require(webpackFiles.common)(settings);
+module.exports = context => {
+  const { settings, packageJson } = context;
+  let common = settings.webpack.common;
+
+  if (typeof common === 'function') {
+    common = common(context);
+  }
 
   return {
     ...common,

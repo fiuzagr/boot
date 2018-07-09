@@ -1,10 +1,14 @@
 const OfflinePlugin = require('offline-plugin');
 const camelCase = require('lodash/camelCase');
 
-module.exports = settings => {
-  const { webpackFiles, env, packageJson } = settings;
-  const common = require(webpackFiles.common)(settings);
+module.exports = context => {
+  const { settings, env, packageJson } = context;
   const publicPath = env.PUBLIC_PATH;
+  let common = settings.webpack.common;
+
+  if (typeof common === 'function') {
+    common = common(context);
+  }
 
   return {
     ...common,
@@ -26,7 +30,9 @@ module.exports = settings => {
         rewrites: asset =>
           asset.indexOf('web-app.manifest') >= 0
             ? '/web-app.manifest.json'
-            : asset.indexOf('index.html') >= 0 ? publicPath : asset,
+            : asset.indexOf('index.html') >= 0
+              ? publicPath
+              : asset,
         ServiceWorker: {
           // cacheName is very dangerous: CAN NOT CHANGE
           cacheName: `${camelCase(

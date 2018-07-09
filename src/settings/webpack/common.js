@@ -1,16 +1,16 @@
-const _path = require('path');
+const path = require('path');
 const webpack = require('webpack');
 const keys = require('lodash/keys');
 
-module.exports = ({ path, args, env, packageJson }) => {
-  const bootModulesPath = path.boot.modules;
+module.exports = ({ paths, args, env, packagesJson }) => {
+  const bootModulesPath = paths.boot.modules;
 
   const watch = args.w || args.watch || env.WATCH || process.env.WATCH;
-  const processPath = path.process.root;
-  const processSrcPath = path.process.src;
-  const processModulesPath = path.process.modules;
+  const processPath = paths.process.root;
+  const processSrcPath = paths.process.src;
+  const processModulesPath = paths.process.modules;
 
-  const distPath = _path.join(processPath, 'dist');
+  const distPath = path.join(processPath, 'dist');
 
   const debugMode = env.DEBUG;
   const mode = debugMode ? 'development' : 'production';
@@ -25,7 +25,7 @@ module.exports = ({ path, args, env, packageJson }) => {
     stats: debugMode ? 'normal' : 'minimal',
 
     entry: {
-      index: [_path.join(processSrcPath, 'index.js')]
+      index: [path.join(processSrcPath, 'index.js')]
     },
 
     output: {
@@ -45,7 +45,7 @@ module.exports = ({ path, args, env, packageJson }) => {
       modules: [bootModulesPath, processModulesPath]
     },
 
-    externals: Object.keys(packageJson.process.peerDependencies || {}).concat(
+    externals: Object.keys(packagesJson.process.peerDependencies || {}).concat(
       []
     ),
 
