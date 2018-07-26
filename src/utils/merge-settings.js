@@ -16,8 +16,12 @@ export default (context = {}) =>
     let processBootSettings = {};
 
     try {
-      processBootSettings = require(`${processBootSettingsPath}`);
+      // eslint-disable-next-line
+      processBootSettings = __non_webpack_require__(
+        `${processBootSettingsPath}`
+      );
     } catch (e) {
+      logger.error(e);
       processBootSettings = {};
     }
 
@@ -27,6 +31,7 @@ export default (context = {}) =>
 
     resolve({
       ...context,
+      bootSettings,
       settings
     });
   });

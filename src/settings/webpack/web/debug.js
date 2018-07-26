@@ -21,6 +21,7 @@ export default context => {
     stats: 'normal',
 
     output: {
+      ...common.output,
       path: distPath,
       filename: 'static/script/[name].js',
       sourceMapFilename: 'static/script/[name].map',

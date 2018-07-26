@@ -16,6 +16,7 @@ export default context => {
     mode: 'production',
 
     output: {
+      ...common.output,
       path: distPath,
       filename: 'static/script/[name].[hash].js',
       sourceMapFilename: 'static/script/[name].[hash].map',

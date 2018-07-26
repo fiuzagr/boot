@@ -63,7 +63,7 @@ export default (context = {}) =>
               })
             );
 
-            resolve(buildSettings[0]);
+            resolve();
           });
         });
       })

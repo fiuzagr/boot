@@ -16,8 +16,10 @@ export default (context = {}) =>
     let processBootTasks = {};
 
     try {
-      processBootTasks = require(`${processBootTasksPath}`);
+      // eslint-disable-next-line
+      processBootTasks = __non_webpack_require__(`${processBootTasksPath}`);
     } catch (e) {
+      logger.error(e);
       processBootTasks = {};
     }
 
@@ -27,6 +29,7 @@ export default (context = {}) =>
 
     resolve({
       ...context,
+      bootTasks,
       tasks
     });
   });

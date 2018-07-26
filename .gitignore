@@ -1,7 +1,7 @@
 *
 .*
 
-!.babelrc
+!.babelrc.js
 !.editorconfig
 !.eslintignore
 !.eslintrc.js

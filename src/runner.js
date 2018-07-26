@@ -30,6 +30,15 @@ export default (context = {}) =>
     .then(mergeTasks)
     .then(getTaskRunner)
     .then(({ taskRunner, ...rest }) => taskRunner(rest))
+    .then(close => {
+      ['SIGINT', 'SIGTERM'].forEach(sig => {
+        process.on(sig, () => {
+          typeof close === 'function'
+            ? close(() => process.exit(0))
+            : process.exit(0);
+        });
+      });
+    })
     .catch(e => {
       logger.error(e);
       process.exit(1);

@@ -50,6 +50,6 @@ export default (context = {}) =>
           logger.info(`Listening on ${host}:${port}`)
         );
 
-        resolve();
+        resolve(server.close.bind(server));
       })
   );

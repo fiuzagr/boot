@@ -2,6 +2,8 @@
 
 require('dotenv').config({ silent: true });
 
+require('@babel/register');
+
 const path = require('path');
 
 const BOOT_ROOT_PATH = (process.env.BOOT_ROOT_PATH = path.resolve(
