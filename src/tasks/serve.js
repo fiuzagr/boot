@@ -30,8 +30,9 @@ export default (context = {}) =>
       new Promise(resolve => {
         logger.info('Serving...');
 
-        const host = serveSettings[0].devServer.host;
-        const port = serveSettings[0].devServer.port;
+        const devServerConfig = serveSettings[0].devServer;
+        const host = devServerConfig.host;
+        const port = devServerConfig.port;
 
         // webpack dev server
         serveSettings[0].entry['devServerClient'] = [
@@ -43,10 +44,10 @@ export default (context = {}) =>
         // create server
         const server = new WebpackDevServer(
           webpack(serveSettings[0]),
-          serveSettings[0].devServer
+          devServerConfig
         );
 
-        server.listen(host, port, () =>
+        server.listen(port, host, () =>
           logger.info(`Listening on ${host}:${port}`)
         );
 

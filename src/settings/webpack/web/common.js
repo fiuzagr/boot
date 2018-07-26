@@ -2,10 +2,14 @@ import path from 'path';
 import OfflinePlugin from 'offline-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import camelCase from 'lodash/camelCase';
+import ip from 'ip';
 
 export default context => {
-  const { settings, paths, env, packagesJson, banner } = context;
-  const publicPath = env.PUBLIC_PATH || '/';
+  const { settings, paths, env, packagesJson, args, banner } = context;
+  const publicPath = args.publicPath || env.PUBLIC_PATH || '/';
+  const host = args.h || args.host || env.HOST || '0.0.0.0';
+  const port = args.p || args.port || env.PORT || '3000';
+  const publicIp = (ip.address() || '0.0.0.0') + ':' + port;
   let common = settings.webpack.common;
 
   if (typeof common === 'function') {
@@ -36,7 +40,7 @@ export default context => {
           publicPath,
           version: env.VERSION || packagesJson.process.version,
           author: packagesJson.process.author,
-          banner: banner || '',
+          banner: banner || 'Powered by boot',
           buildDate: new Date().toString()
         },
         filename: 'index.html',
@@ -64,8 +68,8 @@ export default context => {
         ServiceWorker: {
           // cacheName is very dangerous: CAN NOT CHANGE
           cacheName: `${camelCase(packagesJson.process.name)}:${camelCase(
-            publicPath
-          ) || 'index'}`,
+            publicPath === '/' ? 'index' : publicPath
+          )}`,
           events: true,
           output: 'sw.js',
           navigateFallbackURL: publicPath
@@ -78,6 +82,17 @@ export default context => {
           }
         }
       })
-    ]
+    ],
+
+    devServer: {
+      stats: 'minimal',
+      public: publicIp,
+      publicPath,
+      host,
+      port,
+      historyApiFallback: {
+        index: publicPath
+      }
+    }
   };
 };

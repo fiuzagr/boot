@@ -1,7 +1,7 @@
 import path from 'path';
 
 export default context => {
-  const { settings, paths, env } = context;
+  const { settings, paths } = context;
   let common = settings.webpack.web.common;
 
   if (typeof common === 'function') {
@@ -29,10 +29,8 @@ export default context => {
     },
 
     devServer: {
-      contentBase: distPath,
-      publicPath: env.PUBLIC_PATH || '/',
-      port: env.PORT || '3000',
-      host: env.HOST || '0.0.0.0'
+      ...common.devServer,
+      contentBase: distPath
     }
   };
 };
