@@ -1,0 +1,15 @@
+*
+.*
+
+!index.js
+!package-lock.json
+!package.json
+!README.md
+!UNLICENSE
+
+!dist
+!dist/**/*
+!dist/**/.*
+
+!bin
+!bin/boot

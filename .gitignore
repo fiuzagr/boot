@@ -6,6 +6,7 @@
 !.eslintignore
 !.eslintrc.js
 !.gitignore
+!.npmignore
 !.prettierrc.js
 !index.js
 !package-lock.json
