@@ -32,6 +32,54 @@ export default context => {
       }
     },
 
+    module: {
+      ...common.module,
+      rules: [
+        ...common.module.rules,
+        {
+          test: /web-app.manifest$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'web-app-manifest.json'
+              }
+            },
+            {
+              loader: 'app-manifest-loader'
+            }
+          ]
+        },
+        {
+          test: /font.*\.(svg|woff|woff2|ttf|eot)$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'static/font/[name].[hash].[ext]',
+                publicPath
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(png|jpg|gif)$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'static/image/[name].[hash].[ext]',
+                publicPath
+              }
+            }
+          ]
+        }
+      ]
+    },
+
     plugins: [
       ...common.plugins,
 
@@ -92,6 +140,12 @@ export default context => {
       port,
       historyApiFallback: {
         index: publicPath
+      }
+    },
+
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
       }
     }
   };

@@ -1,56 +1,33 @@
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import map from 'lodash/map';
-import get from 'lodash/get';
-import cloneDeep from 'lodash/cloneDeep';
 
 import logger from '@local/logger';
 
-const getServeSettings = context =>
+export default ({ parsedSettings, paths }) =>
   new Promise(resolve => {
-    logger.info('Getting serve settings...');
+    logger.info('Serving...');
 
-    const args = map(context.args._, arg => arg.replace(/\//g, '.'));
-    const serveSettings = map(args, arg => {
-      const sett = get(context.settings, arg);
-      return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
+    const devServerConfig = parsedSettings[0].devServer;
+    const host = devServerConfig.host;
+    const port = devServerConfig.port;
+
+    // webpack dev server
+    parsedSettings[0].entry['devServerClient'] = [
+      paths.boot.modules +
+        '/webpack-dev-server/client?' +
+        `http://${host}:${port}/`
+    ];
+
+    // create server
+    const server = new WebpackDevServer(
+      webpack(parsedSettings[0]),
+      devServerConfig
+    );
+
+    server.listen(port, host, () => {
+      logger.info(`Listening on ${host}:${port}`);
+      logger.info(`and external on ${devServerConfig.public}`);
     });
 
-    logger.debug(serveSettings);
-
-    resolve({
-      ...context,
-      serveSettings
-    });
+    resolve(server.close.bind(server));
   });
-
-export default (context = {}) =>
-  getServeSettings(context).then(
-    ({ serveSettings, paths }) =>
-      new Promise(resolve => {
-        logger.info('Serving...');
-
-        const devServerConfig = serveSettings[0].devServer;
-        const host = devServerConfig.host;
-        const port = devServerConfig.port;
-
-        // webpack dev server
-        serveSettings[0].entry['devServerClient'] = [
-          paths.boot.modules +
-            '/webpack-dev-server/client?' +
-            `http://${host}:${port}/`
-        ];
-
-        // create server
-        const server = new WebpackDevServer(
-          webpack(serveSettings[0]),
-          devServerConfig
-        );
-
-        server.listen(port, host, () =>
-          logger.info(`Listening on ${host}:${port}`)
-        );
-
-        resolve(server.close.bind(server));
-      })
-  );

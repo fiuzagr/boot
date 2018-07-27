@@ -23,7 +23,7 @@ export default (context = {}) =>
     );
 
     const args = {
-      task: argv.shift(),
+      task: argv.shift().replace(/[:/]/g, '.'),
       _: argv,
       ...dashedArgs
     };

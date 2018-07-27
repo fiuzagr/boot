@@ -2,12 +2,13 @@
 node_modules/
 
 # Not written by hand
-coverage/
-build/
-dist/
+./coverage/
+./build/
+./dist/
 ./lib/
 
 # Inverse ignore
 !.babelrc.js
 !.eslintrc.js
 !.prettierrc.js
+!.boot

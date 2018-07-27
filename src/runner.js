@@ -1,3 +1,5 @@
+import get from 'lodash/get';
+
 import logger from '@local/logger';
 import parseArguments from '@local/utils/parse-arguments';
 import parseEnvironment from '@local/utils/parse-environment';
@@ -5,15 +7,15 @@ import resolvePaths from '@local/utils/resolve-paths';
 import getPackagesJson from '@local/utils/get-packages-json';
 import mergeSettings from '@local/utils/merge-settings';
 import mergeTasks from '@local/utils/merge-tasks';
+import parseSettings from '@local/utils/parse-settings';
 
 const getTaskRunner = context => {
   logger.info('Getting task runner...');
 
   const task = context.args.task;
-  const tasks = context.tasks;
-  const taskRunner = tasks[task];
+  const taskRunner = get(context.tasks, task);
 
-  logger.debug(taskRunner);
+  logger.debug(task, taskRunner);
 
   return Promise.resolve({
     ...context,
@@ -28,6 +30,7 @@ export default (context = {}) =>
     .then(getPackagesJson)
     .then(mergeSettings)
     .then(mergeTasks)
+    .then(parseSettings)
     .then(getTaskRunner)
     .then(({ taskRunner, ...rest }) => taskRunner(rest))
     .then(close => {
