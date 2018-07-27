@@ -11,6 +11,8 @@ const BOOT_ROOT_PATH = (process.env.BOOT_ROOT_PATH = path.resolve(
   '..'
 ));
 
+global.__non_webpack_require__ = require;
+
 const boot = require(`${BOOT_ROOT_PATH}/src/index.js`).default;
 
 boot.runner();

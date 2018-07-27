@@ -3,7 +3,7 @@ import WebpackDevServer from 'webpack-dev-server';
 
 import logger from '@local/logger';
 
-export default ({ parsedSettings, paths }) =>
+export default ({ parsedSettings }) =>
   new Promise(resolve => {
     logger.info('Serving...');
 
@@ -13,9 +13,7 @@ export default ({ parsedSettings, paths }) =>
 
     // webpack dev server
     parsedSettings[0].entry['devServerClient'] = [
-      paths.boot.modules +
-        '/webpack-dev-server/client?' +
-        `http://${host}:${port}/`
+      `webpack-dev-server/client?http://${host}:${port}/`
     ];
 
     // create server

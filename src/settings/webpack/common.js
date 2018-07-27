@@ -2,8 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import map from 'lodash/map';
 import keys from 'lodash/keys';
-import compact from 'lodash/compact';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import fromPairs from 'lodash/fromPairs';
 
 export default ({ paths, args, env, packagesJson }) => {
   const bootModulesPath = paths.boot.modules;
@@ -19,14 +18,12 @@ export default ({ paths, args, env, packagesJson }) => {
   const mode = debugMode ? 'development' : 'production';
   const publicPath = args.publicPath || env.PUBLIC_PATH || '/';
 
-  const styleLoader = debugMode
-    ? 'style-loader'
-    : {
-        loader: MiniCssExtractPlugin.loader,
-        options: {
-          publicPath
-        }
-      };
+  // eslint-disable-next-line
+  const MiniCssExtractPlugin = __non_webpack_require__(
+    'mini-css-extract-plugin'
+  );
+
+  const styleLoader = debugMode ? 'style-loader' : MiniCssExtractPlugin.loader;
 
   return {
     mode,
@@ -131,17 +128,18 @@ export default ({ paths, args, env, packagesJson }) => {
       ]
     },
 
-    plugins: compact([
+    plugins: [
       new webpack.DefinePlugin({
-        ...keys(env, k => ({ [`process.env.${k}`]: JSON.stringify(env[k]) })),
+        ...fromPairs(
+          map(env, k => [`process.env.${k}`, JSON.stringify(env[k])])
+        ),
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }),
-      !debugMode &&
-        new MiniCssExtractPlugin({
-          filename: 'static/style/[name].[hash].css',
-          chunkFilename: 'static/style/[id].[hash].css'
-        })
-    ]),
+      new MiniCssExtractPlugin({
+        filename: 'static/style/[name].[hash].css',
+        chunkFilename: 'static/style/[id].[hash].css'
+      })
+    ],
 
     watch,
 
