@@ -1,9 +1,8 @@
 import map from 'lodash/map';
-import get from 'lodash/get';
-import cloneDeep from 'lodash/cloneDeep';
 import compact from 'lodash/compact';
 
 import logger from '@local/logger';
+import getSettings from '@local/utils/get-settings';
 
 export default (context = {}) =>
   new Promise(resolve => {
@@ -24,10 +23,9 @@ export default (context = {}) =>
 
     logger.debug({ args });
 
-    const parsedSettings = map(args, arg => {
-      const sett = get(context.settings, arg);
-      return typeof sett === 'function' ? sett(cloneDeep(context)) : sett;
-    });
+    const parsedSettings = map(args, arg =>
+      getSettings(context)(context.settings, arg)
+    );
 
     logger.debug({ parsedSettings });
 

@@ -4,24 +4,48 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import camelCase from 'lodash/camelCase';
 import ip from 'ip';
 
+import getSettings from '@local/utils/get-settings';
+
 export default context => {
   const { settings, paths, env, packagesJson, args, banner } = context;
+
+  const debugMode = env.DEBUG;
+  const common = getSettings(context)(settings, 'webpack.common');
   const publicPath = args.publicPath || env.PUBLIC_PATH || '/';
   const host = args.h || args.host || env.HOST || '0.0.0.0';
   const port = args.p || args.port || env.PORT || '3000';
   const publicIp = (ip.address() || '0.0.0.0') + ':' + port;
-  let common = settings.webpack.common;
-
-  if (typeof common === 'function') {
-    common = common(context);
-  }
 
   const bootModulesPath = paths.boot.modules;
+  const processPath = paths.process.root;
   const processSrcPath = paths.process.src;
+
+  let output;
+
+  if (debugMode) {
+    output = {
+      path: path.join(processPath, 'dist', 'debug'),
+      filename: 'static/script/[name].js',
+      sourceMapFilename: 'static/script/[name].map',
+      chunkFilename: 'static/script/[name].js'
+    };
+  } else {
+    output = {
+      path: path.join(processPath, 'dist', 'release'),
+      filename: 'static/script/[name].[hash].js',
+      sourceMapFilename: 'static/script/[name].[hash].map',
+      chunkFilename: 'static/script/[name].[hash].js'
+    };
+  }
 
   return {
     ...common,
     target: 'web',
+
+    output: {
+      ...common.output,
+      ...output
+    },
 
     resolve: {
       ...common.resolve,
@@ -48,32 +72,6 @@ export default context => {
             },
             {
               loader: 'app-manifest-loader'
-            }
-          ]
-        },
-        {
-          test: /font.*\.(svg|woff|woff2|ttf|eot)$/,
-          include: [processSrcPath],
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: 'static/font/[name].[hash].[ext]',
-                publicPath
-              }
-            }
-          ]
-        },
-        {
-          test: /\.(png|jpg|gif)$/,
-          include: [processSrcPath],
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: 'static/image/[name].[hash].[ext]',
-                publicPath
-              }
             }
           ]
         }
@@ -138,6 +136,7 @@ export default context => {
       publicPath,
       host,
       port,
+      contentBase: output.path,
       historyApiFallback: {
         index: publicPath
       }

@@ -8,6 +8,7 @@ import getPackagesJson from '@local/utils/get-packages-json';
 import mergeSettings from '@local/utils/merge-settings';
 import mergeTasks from '@local/utils/merge-tasks';
 import parseSettings from '@local/utils/parse-settings';
+import loadContext from '@local/utils/load-context';
 
 const getTaskRunner = context => {
   logger.info('Getting task runner...');
@@ -30,6 +31,7 @@ export default (context = {}) =>
     .then(getPackagesJson)
     .then(mergeSettings)
     .then(mergeTasks)
+    .then(loadContext)
     .then(parseSettings)
     .then(getTaskRunner)
     .then(({ taskRunner, ...rest }) => taskRunner(rest))

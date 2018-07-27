@@ -16,8 +16,7 @@ export default (settings = {}) =>
         };
       },
       {
-        NODE_ENV: process.env.NODE_ENV || 'development',
-        DEBUG: !process.env.DEBUG === false
+        NODE_ENV: process.env.NODE_ENV || 'development'
       }
     );
 
@@ -25,6 +24,9 @@ export default (settings = {}) =>
       logger.warn(`NODE_ENV is not defined! Assuming "${bootEnv.NODE_ENV}"...`);
       process.env.NODE_ENV = bootEnv.NODE_ENV;
     }
+
+    // convert to boolean
+    bootEnv.DEBUG = !bootEnv.DEBUG === false;
 
     logger.debug(bootEnv);
 

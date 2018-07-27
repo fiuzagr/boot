@@ -17,7 +17,8 @@ export default (context = {}) =>
 
     try {
       // eslint-disable-next-line
-      processBootTasks = __non_webpack_require__(`${processBootTasksPath}`);
+      processBootTasks = __non_webpack_require__(`${processBootTasksPath}`)
+        .default;
     } catch (e) {
       logger.error(e);
       processBootTasks = {};

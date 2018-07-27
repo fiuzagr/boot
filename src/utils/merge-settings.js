@@ -19,7 +19,7 @@ export default (context = {}) =>
       // eslint-disable-next-line
       processBootSettings = __non_webpack_require__(
         `${processBootSettingsPath}`
-      );
+      ).default;
     } catch (e) {
       logger.error(e);
       processBootSettings = {};

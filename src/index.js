@@ -1,3 +1,4 @@
 import runner from '@local/runner';
+import utils from '@local/utils';
 
-export default { runner };
+export default { runner, utils };

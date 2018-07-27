@@ -2,6 +2,8 @@ import path from 'path';
 import webpack from 'webpack';
 import map from 'lodash/map';
 import keys from 'lodash/keys';
+import compact from 'lodash/compact';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export default ({ paths, args, env, packagesJson }) => {
   const bootModulesPath = paths.boot.modules;
@@ -15,7 +17,16 @@ export default ({ paths, args, env, packagesJson }) => {
 
   const debugMode = env.DEBUG;
   const mode = debugMode ? 'development' : 'production';
-  const publicPath = env.PUBLIC_PATH || '/';
+  const publicPath = args.publicPath || env.PUBLIC_PATH || '/';
+
+  const styleLoader = debugMode
+    ? 'style-loader'
+    : {
+        loader: MiniCssExtractPlugin.loader,
+        options: {
+          publicPath
+        }
+      };
 
   return {
     mode,
@@ -64,16 +75,73 @@ export default ({ paths, args, env, packagesJson }) => {
               loader: 'babel-loader'
             }
           ]
+        },
+        {
+          test: /\.css$/,
+          include: [processSrcPath],
+          use: [
+            styleLoader,
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1
+              }
+            },
+            'postcss-loader'
+          ]
+        },
+        {
+          test: /font.*\.(svg|woff|woff2|ttf|eot)$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'static/font/[name].[hash].[ext]',
+                publicPath
+              }
+            }
+          ]
+        },
+        {
+          test: /^(?!.*(icon_|favicon)).*\.(png|jpg|gif)$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(png|jpg|gif)$/,
+          include: [processSrcPath],
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'static/image/[name].[hash].[ext]',
+                publicPath
+              }
+            }
+          ]
         }
       ]
     },
 
-    plugins: [
+    plugins: compact([
       new webpack.DefinePlugin({
         ...keys(env, k => ({ [`process.env.${k}`]: JSON.stringify(env[k]) })),
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      })
-    ],
+      }),
+      !debugMode &&
+        new MiniCssExtractPlugin({
+          filename: 'static/style/[name].[hash].css',
+          chunkFilename: 'static/style/[id].[hash].css'
+        })
+    ]),
 
     watch,
 
