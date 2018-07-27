@@ -1,15 +1,14 @@
 {
   "name": "@fiuzagr/boot",
   "private": false,
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Boot webpack projects.",
   "author": "fiuzagr",
   "license": "SEE LICENSE IN UNLICENSE",
   "main": "index.js",
   "files": [
-    "bin",
+    "bin/boot",
     "dist",
-    "src",
     "index.js",
     "UNLICENSE",
     "README.md"
