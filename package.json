@@ -1,7 +1,7 @@
 {
   "name": "@fiuzagr/boot",
   "private": false,
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "Boot webpack projects.",
   "author": "fiuzagr",
   "license": "SEE LICENSE IN UNLICENSE",
