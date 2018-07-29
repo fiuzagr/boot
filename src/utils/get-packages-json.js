@@ -24,10 +24,7 @@ export default (context = {}) => {
 
       return {
         ...context,
-        packagesJson: {
-          boot: bootPackageJson,
-          process: processPackageJson
-        }
+        packagesJson
       };
     })
   );
