@@ -59,7 +59,7 @@ export default ({ paths, args, env, packagesJson }) => {
 
     externals: map(
       keys(packagesJson.process.peerDependencies || {}),
-      dependency => new RegExp(`${dependency}(/.+)?`)
+      dependency => new RegExp(`^${dependency}(/.+)?$`)
     ),
 
     module: {
