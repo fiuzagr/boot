@@ -61,11 +61,15 @@ export default context => {
       rules: [
         ...common.module.rules,
         {
+          type: 'javascript/auto',
           test: /(\.webmanifest|manifest\.json|browserconfig\.xml)$/,
           include: [processSrcPath],
           use: [
             {
-              loader: 'file-loader'
+              loader: 'file-loader',
+              options: {
+                name: '[name].[ext]'
+              }
             },
             {
               loader: 'app-manifest-loader'
@@ -98,7 +102,7 @@ export default context => {
         caches: {
           main: [':rest:'],
           additional: [':externals:'],
-          optional: ['**/font/**/*.*']
+          optional: []
         },
         excludes: ['**/.*', '**/*.map'],
         externals: [],
