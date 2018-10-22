@@ -61,14 +61,11 @@ export default context => {
       rules: [
         ...common.module.rules,
         {
-          test: /web-app.manifest$/,
+          test: /(\.webmanifest|manifest\.json|browserconfig\.xml)$/,
           include: [processSrcPath],
           use: [
             {
-              loader: 'file-loader',
-              options: {
-                name: 'web-app-manifest.json'
-              }
+              loader: 'file-loader'
             },
             {
               loader: 'app-manifest-loader'
@@ -106,11 +103,7 @@ export default context => {
         excludes: ['**/.*', '**/*.map'],
         externals: [],
         rewrites: asset =>
-          asset.indexOf('web-app-manifest.json') >= 0
-            ? '/web-app-manifest.json'
-            : asset.indexOf('index.html') >= 0
-              ? publicPath
-              : asset,
+          asset.indexOf('index.html') >= 0 ? publicPath : asset,
         ServiceWorker: {
           // cacheName is very dangerous: CAN NOT CHANGE
           cacheName: `${camelCase(packagesJson.process.name)}:${camelCase(
