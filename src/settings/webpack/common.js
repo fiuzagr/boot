@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import map from 'lodash/map';
 import keys from 'lodash/keys';
 import fromPairs from 'lodash/fromPairs';
+import compact from 'lodash/compact';
 
 export default ({ paths, args, env, packagesJson }) => {
   const bootModulesPath = paths.boot.modules;
@@ -11,6 +12,7 @@ export default ({ paths, args, env, packagesJson }) => {
   const processPath = paths.process.root;
   const processSrcPath = paths.process.src;
   const processModulesPath = paths.process.modules;
+  const rootModulesPath = env.LERNA ? path.resolve(processPath, '../..') : null;
 
   const distPath = path.join(processPath, 'dist');
 
@@ -46,7 +48,12 @@ export default ({ paths, args, env, packagesJson }) => {
     resolve: {
       symlinks: true,
       extensions: ['.js', '.jsx'],
-      modules: [processSrcPath, processModulesPath, bootModulesPath],
+      modules: compact([
+        processSrcPath,
+        processModulesPath,
+        rootModulesPath,
+        bootModulesPath
+      ]),
       alias: {
         '@local': processSrcPath
       }
@@ -54,7 +61,7 @@ export default ({ paths, args, env, packagesJson }) => {
 
     resolveLoader: {
       symlinks: true,
-      modules: [processModulesPath, bootModulesPath]
+      modules: compact([processModulesPath, rootModulesPath, bootModulesPath])
     },
 
     externals: map(
