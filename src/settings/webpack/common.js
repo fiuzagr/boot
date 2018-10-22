@@ -12,7 +12,9 @@ export default ({ paths, args, env, packagesJson }) => {
   const processPath = paths.process.root;
   const processSrcPath = paths.process.src;
   const processModulesPath = paths.process.modules;
-  const rootModulesPath = env.LERNA ? path.resolve(processPath, '../..') : null;
+  const rootModulesPath = env.LERNA
+    ? path.resolve(processPath, '../../node_modules')
+    : null;
 
   const distPath = path.join(processPath, 'dist');
 
